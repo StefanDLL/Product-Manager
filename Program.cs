@@ -9,7 +9,7 @@ namespace Product_Manager;
 
 class Program
 {
-    // Anslutningssträngen till din SQL Server-databas "Product_Manager"
+    
 
 
     //static ApplicationContext context = new ApplicationContext();
