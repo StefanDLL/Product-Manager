@@ -9,10 +9,10 @@ namespace Product_Manager;
 
 class Program
 {
-    
 
 
-    //static ApplicationContext context = new ApplicationContext();
+
+    static ApplicationContext context = new ApplicationContext();
 
     static void Main()
     {
@@ -25,7 +25,7 @@ class Program
             WriteLine("2. Sök produkt");
             WriteLine("3. Avsluta");
 
-            var keyPressed = ReadKey(intercept: true);
+            var keyPressed = ReadKey(intercept: true); //visar inte numret vi klickar på
             Clear();
 
             switch (keyPressed.Key)
@@ -73,25 +73,42 @@ class Program
             Write("Pris: ");
             if (int.TryParse(ReadLine(), out int price))
             {
-                using (var context = new ApplicationContext())
-                {
-                    var product = new Product
-                    {
-                        Name = productName,
-                        SKU = sku,
-                        Description = description,
-                        ImageUrl = imageUrl,
-                        Price = price
-                    };
-
-                    context.Product.Add(product);
-                    context.SaveChanges();
-                }
-
                 Clear();
-                WriteLine("Produkt sparad");
-                Thread.Sleep(2000);
-                break;
+                WriteLine($"Namn: {productName}");
+                WriteLine($"SKU: {sku}");
+                WriteLine($"Beskrivning: {description}");
+                WriteLine($"Bild (URL): {imageUrl}");
+                WriteLine($"Pris: {price}");
+                WriteLine();
+                Write("Är detta korrekt? (J)a (N)ej: ");
+                ConsoleKeyInfo confirmationKey = ReadKey(intercept: true);
+
+                if (confirmationKey.Key == ConsoleKey.J)
+                {
+                    //using (var context = new ApplicationContext())
+                    {
+                        var product = new Product
+                        {
+                            Name = productName,
+                            SKU = sku,
+                            Description = description,
+                            ImageUrl = imageUrl,
+                            Price = price
+                        };
+
+                        context.Product.Add(product);
+                        context.SaveChanges();
+                    }
+
+                    Clear();
+                    WriteLine("Produkt sparad");
+                    Thread.Sleep(2000);
+                    break;
+                }
+                else if (confirmationKey.Key == ConsoleKey.N)
+                {
+                    // Användaren valde att inte bekräfta, gå tillbaka och mata in informationen igen.
+                }
             }
             else
             {
@@ -108,34 +125,56 @@ class Program
         Write("SKU: ");
         string searchSku = ReadLine();
 
-        using (var context = new ApplicationContext())
+        //using (var context = new ApplicationContext())
         {
             var product = context.Product.FirstOrDefault(x => x.SKU == searchSku);
 
             if (product != null)
             {
-                Clear();
-                WriteLine($"Namn: {product.Name}");
-                WriteLine($"SKU: {product.SKU}");
-                WriteLine($"Beskrivning: {product.Description}");
-                WriteLine($"Bild (URL): {product.ImageUrl}");
-                WriteLine($"Pris: {product.Price}");
-                WriteLine();
-                WriteLine("(R)adera");
-                ConsoleKeyInfo keyInfo = ReadKey(intercept: true);
-
-                if (keyInfo.Key == ConsoleKey.R)
+                while (true)
                 {
-                    context.Product.Remove(product);
-                    context.SaveChanges();
-
                     Clear();
-                    WriteLine("Produkt raderad");
-                    Thread.Sleep(2000);
-                }
-                else if (keyInfo.Key == ConsoleKey.Escape)
-                {
-                    
+                    WriteLine($"Namn: {product.Name}");
+                    WriteLine($"SKU: {product.SKU}");
+                    WriteLine($"Beskrivning: {product.Description}");
+                    WriteLine($"Bild (URL): {product.ImageUrl}");
+                    WriteLine($"Pris: {product.Price}");
+                    WriteLine();
+                    WriteLine("(R)adera");
+                    ConsoleKeyInfo keyInfo = ReadKey(intercept: true);
+
+                    if (keyInfo.Key == ConsoleKey.R)
+                    {
+                        Clear();
+                        WriteLine($"Namn: {product.Name}");
+                        WriteLine($"SKU: {product.SKU}");
+                        WriteLine($"Beskrivning: {product.Description}");
+                        WriteLine($"Bild (URL): {product.ImageUrl}");
+                        WriteLine($"Pris: {product.Price}");
+                        WriteLine();
+                        Write("Radera produkt? (J)a (N)ej: ");
+                        keyInfo = ReadKey(intercept: true);
+
+                        if (keyInfo.Key == ConsoleKey.J)
+                        {
+                            context.Product.Remove(product);
+                            context.SaveChanges();
+
+                            Clear();
+                            WriteLine("Produkt raderad");
+                            Thread.Sleep(2000);
+                            return;
+                        }
+                        else if (keyInfo.Key == ConsoleKey.N)
+                        {
+                            // Visa detaljvyn igen
+                        }
+                    }
+                    else if (keyInfo.Key == ConsoleKey.Escape)
+                    {
+                        // Användaren tryckte på Esc, gå tillbaka till huvudmenyn.
+                        break;
+                    }
                 }
             }
             else
