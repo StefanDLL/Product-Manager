@@ -1,5 +1,4 @@
-﻿using Microsoft.Data.SqlClient;
-using Product_Manager.Data;
+﻿using Product_Manager.Data;
 using Product_Manager.Domain;
 using static System.Console;
 
@@ -9,30 +8,27 @@ namespace Product_Manager;
 
 class Program
 {
-
-
-
-    static ApplicationContext context = new ApplicationContext();
+    //static ApplicationContext context = new ApplicationContext();
 
     static void Main()
     {
         CursorVisible = false;
         Title = "Product_Manager";
 
-        while (true) // Visa huvudmenyn
+        while (true) 
         {
             WriteLine("1. Ny produkt");
             WriteLine("2. Sök produkt");
             WriteLine("3. Avsluta");
 
-            var keyPressed = ReadKey(intercept: true); //visar inte numret vi klickar på
+            var keyPressed = ReadKey(intercept: true); 
             Clear();
 
             switch (keyPressed.Key)
             {
                 case ConsoleKey.D1:
                 case ConsoleKey.NumPad1:
-                    AddProduct(); // Anropa funktionen för att lägga till en ny produkt
+                    AddProduct(); 
                     break;
 
                 case ConsoleKey.D2:
@@ -85,7 +81,7 @@ class Program
 
                 if (confirmationKey.Key == ConsoleKey.J)
                 {
-                    //using (var context = new ApplicationContext())
+                   using (var context = new ApplicationContext())
                     {
                         var product = new Product
                         {
@@ -107,7 +103,7 @@ class Program
                 }
                 else if (confirmationKey.Key == ConsoleKey.N)
                 {
-                    // Användaren valde att inte bekräfta, gå tillbaka och mata in informationen igen.
+                    
                 }
             }
             else
@@ -125,7 +121,7 @@ class Program
         Write("SKU: ");
         string searchSku = ReadLine();
 
-        //using (var context = new ApplicationContext())
+        using (var context = new ApplicationContext())
         {
             var product = context.Product.FirstOrDefault(x => x.SKU == searchSku);
 
@@ -167,12 +163,11 @@ class Program
                         }
                         else if (keyInfo.Key == ConsoleKey.N)
                         {
-                            // Visa detaljvyn igen
+                           
                         }
                     }
                     else if (keyInfo.Key == ConsoleKey.Escape)
                     {
-                        // Användaren tryckte på Esc, gå tillbaka till huvudmenyn.
                         break;
                     }
                 }
